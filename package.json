@@ -4,7 +4,7 @@
   "title": "Figma Shortcuts",
   "description": "Search and copy Figma keyboard shortcuts for macOS, Windows, or Linux",
   "icon": "command-icon.png",
-  "author": "19arturd95",
+  "author": "arturdz",
   "platforms": ["macOS"],
   "categories": ["Design Tools", "Productivity"],
   "license": "MIT",
