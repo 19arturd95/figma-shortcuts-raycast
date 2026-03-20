@@ -1,28 +1,43 @@
-import { List, ActionPanel, Action, getPreferenceValues } from "@raycast/api";
+import { List, ActionPanel, Action, getPreferenceValues, Color } from "@raycast/api";
+import { useState } from "react";
 import { shortcuts, CATEGORIES } from "./data/shortcuts";
 import type { FigmaShortcut } from "./data/shortcuts";
 
+type Platform = "mac" | "windows" | "linux";
+
 interface Preferences {
-  platform: "mac" | "windows" | "linux";
+  platform: Platform;
 }
 
-function getPlatformLabel(platform: Preferences["platform"]): string {
-  if (platform === "mac") return "macOS";
-  if (platform === "windows") return "Windows";
-  return "Linux";
-}
+const PLATFORMS: { value: Platform; label: string }[] = [
+  { value: "mac", label: "macOS" },
+  { value: "windows", label: "Windows" },
+  { value: "linux", label: "Linux" },
+];
 
-// Linux uses the same shortcuts as Windows
-function getKeys(shortcut: FigmaShortcut, platform: Preferences["platform"]): string {
+function getKeys(shortcut: FigmaShortcut, platform: Platform): string {
   return platform === "mac" ? shortcut.mac : shortcut.windows;
 }
 
 export default function Command() {
-  const { platform } = getPreferenceValues<Preferences>();
-  const platformLabel = getPlatformLabel(platform);
+  const { platform: defaultPlatform } = getPreferenceValues<Preferences>();
+  const [platform, setPlatform] = useState<Platform>(defaultPlatform);
+
+  const platformDropdown = (
+    <List.Dropdown tooltip="Select Platform" value={platform} onChange={(v) => setPlatform(v as Platform)}>
+      {PLATFORMS.map((p) => (
+        <List.Dropdown.Item
+          key={p.value}
+          value={p.value}
+          title={p.label}
+          icon={platform === p.value ? { source: "●", tintColor: Color.Orange } : { source: "○" }}
+        />
+      ))}
+    </List.Dropdown>
+  );
 
   return (
-    <List searchBarPlaceholder="Search Figma shortcuts...">
+    <List searchBarPlaceholder="Search Figma shortcuts..." searchBarAccessory={platformDropdown}>
       {CATEGORIES.map((category) => {
         const items = shortcuts.filter((s) => s.category === category);
         if (items.length === 0) return null;
@@ -35,9 +50,8 @@ export default function Command() {
                 <List.Item
                   key={shortcut.id}
                   title={shortcut.action}
-                  subtitle={keys}
                   keywords={shortcut.keywords}
-                  accessories={[{ tag: { value: platformLabel, color: "#F24E1E" } }]}
+                  accessories={[{ text: { value: keys, color: Color.SecondaryText } }]}
                   actions={
                     <ActionPanel>
                       <Action.CopyToClipboard title="Copy Shortcut" content={keys} />
