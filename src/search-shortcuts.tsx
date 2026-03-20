@@ -26,12 +26,7 @@ export default function Command() {
   const platformDropdown = (
     <List.Dropdown tooltip="Select Platform" value={platform} onChange={(v) => setPlatform(v as Platform)}>
       {PLATFORMS.map((p) => (
-        <List.Dropdown.Item
-          key={p.value}
-          value={p.value}
-          title={p.label}
-          icon={platform === p.value ? { source: "●", tintColor: Color.Orange } : { source: "○" }}
-        />
+        <List.Dropdown.Item key={p.value} value={p.value} title={p.label} />
       ))}
     </List.Dropdown>
   );
