@@ -11,7 +11,7 @@ interface Preferences {
 
 const PLATFORMS: { value: Platform; label: string }[] = [
   { value: "mac", label: "macOS" },
-  { value: "windows", label: "Windows" },
+  { value: "windows", label: "Win" },
   { value: "linux", label: "Linux" },
 ];
 
